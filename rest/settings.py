@@ -43,6 +43,12 @@ INSTALLED_APPS = [
     'rest.app.user',
     'rest.app.profile',
     'rest.app.book',
+    'rest.app.order',
+    'rest.app.cart',
+    'rest.app.payment',
+    
+    'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -53,8 +59,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'rest.urls'
 
 TEMPLATES = [
@@ -138,7 +148,11 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+
+
 }
 
 # Jwt Authentication

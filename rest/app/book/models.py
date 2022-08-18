@@ -1,5 +1,6 @@
 from django.db import models
-
+from ..user.models import User
+from ..profile.models import UserProfile
 # Create your models here.
 
 class BookCategory(models.Model):
@@ -12,8 +13,21 @@ class Book(models.Model):
     namebook = models.CharField(max_length=500)
     author = models.CharField(max_length=225)
     categorybook = models.TextField()
-    pricebook = models.BigIntegerField(max_length=11)
+    pricebook = models.BigIntegerField()
     status = models.TextField()
+    image = models.ImageField(upload_to='item/', null=True, blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     delete_date = models.DateTimeField(auto_now=True)
+
+class UserFavoriteList(models.Model): #deprecated
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    books = models.ManyToManyField(Book, null=True, blank=True)
+    created_date =  models.DateTimeField(auto_now_add=True)
+    updated_date =  models.DateTimeField(auto_now=True)
+
+class FavoriteList(models.Model):
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    books = models.ManyToManyField(Book)
+
+

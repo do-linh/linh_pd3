@@ -7,9 +7,11 @@ Created on Thu Dec  7 19:10:16 2019
 """
 
 from django.conf.urls import url
-from rest.app.profile.views import UserProfileView
+from django.urls import path
+from .views import UserProfileView, UserFavoriteListAPIView
 
 
 urlpatterns = [
+    path('<uuid:profile_id>/favorite',UserFavoriteListAPIView.as_view()),
     url(r'', UserProfileView.as_view()),
     ]

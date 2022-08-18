@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.urls import path, include
 
+
 urlpatterns = [
     path('api/user', include('rest.app.user.urls')),
     path('api/profile', include('rest.app.profile.urls')),
     path('api/book', include('rest.app.book.urls')),
+    path('api/order/', include('rest.app.order.urls')),
+
 ]
