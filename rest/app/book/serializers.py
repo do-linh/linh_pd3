@@ -10,6 +10,7 @@ class BookCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BookSerializer(serializers.ModelSerializer):
+    image_url = serializers.ImageField(required=False)
     class Meta:
         model = Book
         fields = '__all__'

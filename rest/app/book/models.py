@@ -1,6 +1,7 @@
 from django.db import models
 from ..user.models import User
 from ..profile.models import UserProfile
+from ..profile.models import Author
 # Create your models here.
 
 class BookCategory(models.Model):
@@ -12,6 +13,7 @@ class Book(models.Model):
     id_category = models.ForeignKey(BookCategory, to_field='id_category', on_delete=models.CASCADE)
     namebook = models.CharField(max_length=500)
     author = models.CharField(max_length=225)
+    book_author = models.ForeignKey(Author,on_delete=models.CASCADE, null=True, blank=True)
     categorybook = models.TextField()
     pricebook = models.BigIntegerField()
     status = models.TextField()

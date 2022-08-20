@@ -11,6 +11,7 @@ from django.urls import path
 from .views import UserProfileView, UserFavoriteListAPIView
 
 
+
 urlpatterns = [
     path('<uuid:profile_id>/favorite',UserFavoriteListAPIView.as_view()),
     url(r'', UserProfileView.as_view()),

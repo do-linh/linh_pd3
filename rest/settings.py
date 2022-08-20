@@ -46,9 +46,13 @@ INSTALLED_APPS = [
     'rest.app.order',
     'rest.app.cart',
     'rest.app.payment',
+    'rest.app.checkout',
+    'rest.app.warehouse',
     
     'corsheaders',
     'django_filters',
+    'django_countries',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -138,6 +142,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
+
 
 
 AUTH_USER_MODEL = 'user.User'
@@ -150,7 +157,7 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 30
 
 
 }
@@ -191,3 +198,4 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_AUTH_COOKIE': None,
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

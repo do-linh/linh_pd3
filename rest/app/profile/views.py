@@ -5,11 +5,12 @@ Created on Thu Dec  7 17:25:00 2019
 
 @author: sambhav
 """
-from rest_framework import status
+from rest_framework import status,viewsets
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.views import APIView
 
 from django.shortcuts import get_object_or_404
@@ -18,6 +19,9 @@ from rest.app.user.serializers import UserRegistrationSerializer
 from rest.app.profile.models import UserProfile
 from rest.app.book.models import FavoriteList
 from ..book.serializers import BookSerializer, UserFavoriteListSER
+
+from .models import Author
+from .serializers import AuthorSER
 
 
 class UserProfileView(RetrieveAPIView):
@@ -70,3 +74,10 @@ class UserFavoriteListAPIView(APIView):
         fav_list = favorite_SER.create(validated_data=favorite_SER.validated_data)
         return Response(UserFavoriteListSER(fav_list).data,status=status.HTTP_201_CREATED)
 
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
+    authentication_class = JSONWebTokenAuthentication
+    serializer_class = AuthorSER
+    queryset = Author.objects.all()
+    parser_classes = (MultiPartParser, FormParser,JSONParser)
