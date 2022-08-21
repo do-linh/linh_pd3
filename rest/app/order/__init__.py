@@ -14,3 +14,21 @@ class OrderStatus:
         (FULFILLED, "Fulfilled"),
         (CANCELED, "Canceled"),
     ]
+class DiscountValueType:
+    FIXED = "fixed"
+    PERCENTAGE = "percentage"
+
+    CHOICES = [
+        (FIXED, "đ"),
+        (PERCENTAGE, "%"),
+    ]
+class VoucherType:
+    SHIPPING = "shipping"
+    ENTIRE_ORDER = "entire_order"
+    SPECIFIC_PRODUCT = "specific_product"
+
+    CHOICES = [
+        (ENTIRE_ORDER, "Entire order"),
+        (SHIPPING, "Shipping"),
+        (SPECIFIC_PRODUCT, "Specific products, collections and categories"),
+    ]

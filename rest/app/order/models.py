@@ -1,36 +1,14 @@
 from django.db import models
+from django.db.models import Q, F
 from django.conf import settings
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator
 from ..book.models import Book
-from . import OrderStatus
+from . import OrderStatus, VoucherType,DiscountValueType
 from decimal import Decimal
-# # Create your models here.
-# class OrderLine(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-#                              on_delete=models.CASCADE, null=True)
-#     ordered = models.BooleanField(default=False)
-#     book = models.ForeignKey(Book, null=True, on_delete=models.CASCADE)
-#     quantity = models.PositiveSmallIntegerField(default=1)
-#     description = models.CharField(max_length=255, null=True, blank=True)
-#     created_date = models.DateTimeField(auto_now_add=True)
-#     updated_date = models.DateTimeField(auto_now=True)
-#     def total(self):
-#         return self.book.pricebook * self.quantity
+from functools import partial
 
-# class Order(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-#                              on_delete=models.CASCADE, null=True)
-#     lineOrder = models.ManyToManyField(OrderDetail)
-#     total = models.BigIntegerField(null=True, blank=True)
-#     ordered = models.BooleanField(default=False)
-#     created_date = models.DateTimeField(auto_now_add=True)
-#     updated_date = models.DateTimeField(auto_now=True)
-#     def get_sub_total(self):
-#         total = 0
-#         for order_item in self.lineOrder.all():
-#             total += order_item.total()
-#         return total
+
 class Address(models.Model):
     first_name = models.CharField(max_length=256, blank=True)
     last_name = models.CharField(max_length=256, blank=True)
@@ -44,8 +22,23 @@ class Address(models.Model):
     country_area = models.CharField(max_length=128, blank=True)
     phone = models.CharField(max_length=10,blank=True, default="")
 
+class VoucherQueryset(models.QuerySet):
+    def active(self, date):
+        return self.filter(
+            Q(usage_limit__isnull=True) | Q(used__lt=F("usage_limit")),
+            Q(end_date__isnull=True) | Q(end_date__gte=date),
+            start_date__lte=date,
+        )
+
+    def expired(self, date):
+        return self.filter(
+            Q(used__gte=F("usage_limit")) | Q(end_date__lt=date), start_date__lt=date
+        )
 
 class Voucher(models.Model):
+    type = models.CharField(
+        max_length=20, choices=VoucherType.CHOICES, default=VoucherType.ENTIRE_ORDER
+    )
     name = models.CharField(max_length=255, null=True, blank=True)
     code = models.CharField(max_length=12, unique=True, db_index=True)
     usage_limit = models.PositiveIntegerField(null=True, blank=True)
@@ -57,6 +50,22 @@ class Voucher(models.Model):
     apply_once_per_order = models.BooleanField(default=False)
     apply_once_per_customer = models.BooleanField(default=False)
     discount_value = models.IntegerField()
+
+    objects = VoucherQueryset.as_manager()
+    @property
+    def is_free(self):
+        return (
+            self.discount_value == Decimal(100)
+            and self.discount_value_type == DiscountValueType.PERCENTAGE
+        )
+
+    def get_discount(self):
+        if self.discount_value_type == DiscountValueType.FIXED:
+            discount_amount = Money(self.discount_value, settings.DEFAULT_CURRENCY)
+            return partial(fixed_discount, discount=discount_amount)
+        if self.discount_value_type == DiscountValueType.PERCENTAGE:
+            return partial(percentage_discount, percentage=self.discount_value)
+        raise NotImplementedError("Unknown discount type")
 
     
 class Order(models.Model):
