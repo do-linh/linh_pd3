@@ -1,17 +1,29 @@
-# from rest_framework.serializers import ModelSerializer
-# from rest_framework import serializers
-# from .models import Order, OrderDetail
-# from ..user.serializers import UserSerializer
+from rest_framework import serializers
+from rest_framework.serializers import StringRelatedField
+from .models import Order, OrderLine, Address
 
-# class OrderDetailSER(ModelSerializer):
-#     quantity = serializers.IntegerField(min_value=0)
-#     class Meta:
-#         model = OrderDetail
-#         fields = '__all__'
+from ...serializers import StringSerializer
 
-# class OrderSER(ModelSerializer):
-#     total = serializers.IntegerField(read_only=True)
-#     # lineOrder = OrderDetailSER()
-#     class Meta:
-#         model = Order
-#         fields = '__all__'
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        exclude = ['id']
+
+class OrderLineSerializer(serializers.ModelSerializer):
+    book  = StringSerializer()
+    class Meta:
+        model = OrderLine
+        fields = ['book' , 'quantity', 'unit_price']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    lines = OrderLineSerializer(many=True)
+    billing_address = AddressSerializer()
+    shipping_address = AddressSerializer()
+    # sub_total = serializers.CharField(source='sub_total', read_only=True)
+    class Meta:
+       
+        
+        model = Order
+        # fields = ['lines', 'created_date', 'shipping_price', 'total', 'customer_note', '']
+        exclude = ['voucher','discount_amount', 'discount_name']

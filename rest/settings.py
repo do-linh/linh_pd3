@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest.app.profile',
     'rest.app.book',
     'rest.app.order',
-    'rest.app.cart',
     'rest.app.payment',
     'rest.app.checkout',
     'rest.app.warehouse',
@@ -199,3 +198,10 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': None,
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+PAYPAL_CLIENT_ID = "AXDlGD62uA3MDhETwx3Fo-l2ZkKQj6tLTv1QmpY9NeAyVWcqSdhIcpI4OymG91RhSLdzcl-22hmMK7yr"
+PAYPAL_CLIENT_SECRET = 'EFtVerLjxAewcHTyS_oMJ6QnC0gfOBCGnnf4gie_3ryc__AwJ3s6i565o1KmY8goxsgXEV3uT-NaVCcr'
+PAYPAL_BUSINESS_ACCT = 'sb-yj2ey8300137@business.example.com'
+
+APPEND_SLASH=False

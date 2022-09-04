@@ -1,13 +1,17 @@
 from rest_framework import serializers
-from .models import BookCategory, Book,FavoriteList
+from .models import BookCategory, Book,FavoriteList, BookReview
+
 
 class StringSerializer(serializers.StringRelatedField):
     def to_internal_value(self, value):
         return value
+
+
 class BookCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = BookCategory
         fields = '__all__'
+
 
 class BookSerializer(serializers.ModelSerializer):
     image_url = serializers.ImageField(required=False)
@@ -15,8 +19,8 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
-class UserFavoriteListSER(serializers.ModelSerializer):
 
+class UserFavoriteListSER(serializers.ModelSerializer):
     class Meta:
         model = FavoriteList
         fields = '__all__'
@@ -29,3 +33,12 @@ class UserFavoriteListSER(serializers.ModelSerializer):
             print('add book:', book)
             print(fav_list.books.add(book))
         return fav_list
+
+
+class BookReviewSerializer(serializers.ModelSerializer):
+    is_negative = serializers.BooleanField(read_only=True)
+    class Meta:
+        fields = "__all__"
+        model = BookReview
+    def perform_create(self, **kwargs):
+        self.save(**kwargs)

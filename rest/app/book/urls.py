@@ -1,15 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Dec  6 14:04:16 2019
 
-@author: sambhav
-"""
+from django.urls import path
 from django.conf.urls import url
-from rest.app.book.views import BookCategoryViewSet, BookViewSet
+from rest.app.book.views import BookCategoryViewSet, BookViewSet, BookReviewAPIView, BookReviewViewSet
+
 
 
 urlpatterns = [
+    path('<int:book_id>/review', BookReviewAPIView.as_view() ), 
+
     url(r'category/(?P<pk>\d+)$', BookCategoryViewSet.as_view({
         'put': 'update',
         'delete': 'destroy'
@@ -26,4 +24,5 @@ urlpatterns = [
         'get': 'list',
         'post': 'create',
     })),
+    
 ]

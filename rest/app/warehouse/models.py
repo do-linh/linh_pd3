@@ -1,8 +1,7 @@
 from django.db import models
-from django.db.models import F
+from django.db.models import F, Sum
 from ..book.models import Book
 # Create your models here.
-
 
 class Stock(models.Model):
     warehouse = models.CharField(max_length=255, null=True, blank=True)
